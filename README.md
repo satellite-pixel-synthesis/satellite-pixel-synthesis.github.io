@@ -1,8 +1,6 @@
-# D2C
+# Spatial-Temporal Super-Resolution of Satellite Imagery via Conditional Pixel Synthesis
 
-This is the repository that contains source code for the [D2C Website](https://d2c-model.github.io/).
-
-If you find D2C useful for your work please cite:
+This is the repository that contains source code for **Spatial-Temporal Super-Resolution of Satellite Imagery via Conditional Pixel Synthesis**.
 ```
 
 ```
