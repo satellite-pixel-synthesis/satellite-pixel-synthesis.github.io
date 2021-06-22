@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="A new conditional pixel synthesis model that uses abundant, low-cost, low-resolution imagery to generate accurate high-resolution imagery at locations and times in which it is unavailable.">
+  <meta name="keywords" content="satellite imagery, remote sensing, generative networks, generative modeling, pixel synthesis, super resolution">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spatial-Temporal Super-Resolution of Satellite Imagery via Conditional Pixel Synthesis</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script> -->
+
+
+  <script>
+    var doc = document.querySelector('link[rel="import"]').import;
+    // Grab DOM from doc.html's document.
+    var text = doc.querySelector('.doc');
+    document.body.appendChild(text.cloneNode(true));
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    th, td {
+
+    text-align: left;
+
+    vertical-align: middle;
+
+    border-collapse: collapse;
+
+    border: 0.5px solid black;
+
+    padding: 8px;
+
+  }
+  </style>
+</head>
+<body>
+
+<!-- <nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://keunhong.com">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://nerfies.github.io">
+            Nerfies
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io">
+            LatentFusion
+          </a>
+          <a class="navbar-item" href="https://photoshape.github.io">
+            PhotoShape
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav> -->
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Spatial-Temporal Super-Resolution of Satellite Imagery via Conditional Pixel Synthesis</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="http://stanford.edu/~kellyyhe/">Yutong He</a>,</span>
+            <span class="author-block">
+              <a href="index.html">Dingjie Wang</a>,</span>
+            <span class="author-block">
+              <a href="index.html">Nicholas Lai</a>,</span>
+            <span class="author-block">
+              <a href="https://stanford.edu/~wxyz/">William Zhang</a>,</span>
+            <span class="author-block">
+              <a href="https://cs.stanford.edu/~chenlin/">Chenlin Meng</a>,
+            </span>
+            <span class="author-block">
+              <a href="https://web.stanford.edu/~mburke/">Marshall Burke</a>,
+            </span>
+            <span class="author-block">
+              <a href="https://earth.stanford.edu/people/david-lobell">David B. Lobell</a>,
+            </span>
+            <span class="author-block">
+              <a href="http://cs.stanford.edu/~ermon/">Stefano Ermon</a>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Stanford University</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <!-- <span class="link-block">
+                <a href="https://homes.cs.washington.edu/~kpar/nerfies/videos/nerfies_paper.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span> -->
+              <span class="link-block">
+                <a href="index.html"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code [In preparation]</span>
+                </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img id="teaser" src="./static/images/intro_figure.png" height="100%">
+      <!-- <video id="teaser" autoplay muted loop height="100%">
+        <source src="https://homes.cs.washington.edu/~kpar/nerfies/videos/teaser.mp4"
+                type="video/mp4">
+      </video> -->
+      <h2 class="subtitle has-text-centered">
+        Given a 10m low resolution (LR) image from 2016 and a 1m high resolution (HR) image from 2018, we generate a photo-realistic and accurate HR image for 2016.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<!-- <section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop height="100%">
+            <source src="https://homes.cs.washington.edu/~kpar/nerfies/videos/steve.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop height="100%">
+            <source src="https://homes.cs.washington.edu/~kpar/nerfies/videos/chair-tp.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop height="100%">
+            <source src="https://homes.cs.washington.edu/~kpar/nerfies/videos/shiba.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop height="100%">
+            <source src="https://homes.cs.washington.edu/~kpar/nerfies/videos/fullbody.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop height="100%">
+            <source src="https://homes.cs.washington.edu/~kpar/nerfies/videos/blueshirt.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-mask">
+          <video poster="" id="mask" autoplay controls muted loop height="100%">
+            <source src="https://homes.cs.washington.edu/~kpar/nerfies/videos/mask.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coffee">
+          <video poster="" id="coffee" autoplay controls muted loop height="100%">
+            <source src="https://homes.cs.washington.edu/~kpar/nerfies/videos/coffee.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="toby" autoplay controls muted loop height="100%">
+            <source src="https://homes.cs.washington.edu/~kpar/nerfies/videos/toby2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            High-resolution satellite imagery has proven useful for a broad range of tasks, including 
+            measurement of global human population, local economic livelihoods, and 
+            biodiversity, among many others. Unfortunately, high-resolution imagery is both 
+            infrequently collected and expensive to purchase, making it hard to efficiently and 
+            effectively scale these downstream tasks over both time and space. We propose a 
+            new conditional pixel synthesis model that uses abundant, low-cost, low-resolution 
+            imagery to generate accurate high-resolution imagery at locations and times in 
+            which it is unavailable.  We show that our model attains photo-realistic sample 
+            quality and outperforms competing baselines on a key downstream task – object 
+            counting – particularly in geographic locations where conditions on the ground are 
+            changing rapidly.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- Method. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Model</h2>
+          <img id="model" src="./static/images/model.png" height="100%">
+          <h2 class="subtitle has-text-centered">
+            An illustration of our proposed framework (discriminator omitted). Details can be found in the paper.
+          </h2>
+        <div class="content has-text-justified">
+          Our method uses two pairs of high resolution and low resolution 
+          satellite imagery from different timestamps. We then use a low resultion 
+          image and a high resolution image from a different time to generate a 
+          high resolution image of the area at the time the low resolution image was taken. 
+          We use a generative adversarial network (GAN) to train a generator and discriminator.
+        </div>
+      </div>
+    </div>
+    <!--/ Method. -->
+
+
+    <!-- Results. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Results</h2>
+        <img id="model" src="./static/images/comparisons.png" height="100%">
+        <h2 class="subtitle has-text-centered">
+          Samples from all models on the Texas housing dataset.
+          Our models show advantages in both sample quality and structural detail consistency with the ground truth, especially in areas with house or pool construction (zoomed in with colored boxes).
+        </h2>
+        <div class="content has-text-justified">
+          Human evaluation showed improvements over other models in image realism, similarity to ground truth, and accuracy in building and pool counting.
+        </div>
+        <img id="model" src="./static/images/time.png" height="100%">
+        <h2 class="subtitle has-text-centered">
+          Our method is able to generate images given a low resolution image timestamped either before or after the high resolution image.
+        </h2>
+        <img id="model" src="./static/images/fmowcrop.png" height="100%">
+        <h2 class="subtitle has-text-centered">
+          Samples from all models on the <a href="https://www.iarpa.gov/challenges/fmow.html">Functional Map of the World</a> crop field dataset.
+        </h2>
+      </div>
+    </div>
+    <!--/ Results. -->
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{TODO
+  author    = {He, Yutong and Wang, Dingjie and Lai, Nicholas and Zhang, William and Meng, Chenlin and Burke, Marshall and Lobell, David B. and Ermon, Stefano},
+  title     = {Spatial-Temporal Super-Resolution of Satellite Imagery via Conditional Pixel Synthesis},
+  journal   = {TODO},
+  year      = {2021},
+}</code></pre>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Related Work</h2>
+          <div class="content has-text-justified">
+            Previous work has used high resolution satellite imagery for 
+            predicting economic development <a href="https://arxiv.org/abs/2002.01612">[Ayush et al., 2020]</a>. Low resoution satellite imagery has also been used for this task <a href="https://arxiv.org/abs/1711.03654">[Perez et al., 2017]</a>. Previous work in fusion models for satellite imagery include <a href="https://ieeexplore.ieee.org/document/1661809">[Gao et al., 2006]</a>, <a href="https://www.sciencedirect.com/science/article/abs/pii/S0034425710001884">[Zhu et al., 2010]</a>, and <a href="https://arxiv.org/abs/2011.04762">[Bouabid et al., 2020]</a>. In contrast to previous work, which were focused on generating lower resolution satellite imagery, we are interested in generating very high resolution images, which are more useful for downstream tasks such as object detection for poverty level estimation.
+          </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>The format of the website is borrowed from the <a href="https://nerfies.github.io/">Nerfies</a> project website.</p>
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            This means you are free to borrow the <a
+              href="https://github.com/nerfies/nerfies.github.io">source code</a> of this website,
+            we just ask that you link back to this page in the footer.
+            Please remember to remove the analytics code included in the header of the website which
+            you do not want on your website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
